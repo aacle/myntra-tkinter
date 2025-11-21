@@ -44,6 +44,7 @@ class MyntraAutomationApp:
                 "password": "",
                 "headless": False,
                 "manual_otp": True,
+                "browser_path": "",
                 "product_url": "",
                 "size": "",
                 "pincode": "",
@@ -393,6 +394,20 @@ class MyntraAutomationApp:
             font=("Arial", 11),
             bg="white"
         ).pack(anchor="w", pady=5)
+
+        # Browser Path Input
+        tk.Label(browser_frame, text="Custom Browser Path (Optional):", font=("Arial", 11), bg="white").pack(anchor="w", pady=(10, 5))
+        self.browser_path_entry = tk.Entry(browser_frame, font=("Arial", 10), width=50)
+        self.browser_path_entry.pack(anchor="w", padx=5, pady=5)
+        self.browser_path_entry.insert(0, self.config.get("browser_path", ""))
+        
+        tk.Label(
+            browser_frame, 
+            text="Leave empty to auto-detect. On Windows, point to chrome.exe if needed.", 
+            font=("Arial", 9), 
+            bg="white", 
+            fg="gray"
+        ).pack(anchor="w", padx=5)
         
         # Start Button
         start_frame = tk.Frame(main_frame, bg="white")
@@ -577,7 +592,8 @@ class MyntraAutomationApp:
         """Save current configuration"""
         self.config["headless"] = self.headless_var.get()
         self.config["manual_otp"] = self.manual_otp_var.get()
-        self.config["product_url"] = self.product_url_entry.get()
+        self.config["browser_path"] = self.browser_path_entry.get().strip()
+        self.config["product_url"] = self.product_url_entry.get().strip()
         self.config["size"] = self.size_entry.get()
         
         for key, entry in self.delivery_entries.items():
@@ -815,7 +831,8 @@ class MyntraAutomationApp:
                     mobile=account.get("mobile"),
                     headless=self.headless_var.get(),
                     manual_otp=self.manual_otp_var.get(),
-                    log_callback=self.log_message
+                    log_callback=self.log_message,
+                    executable_path=self.config.get("browser_path", "")
                 )
                 
                 # Just open Myntra login page for now
