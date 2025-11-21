@@ -10,12 +10,12 @@ import os
 
 
 class MyntraAutomation:
-    def __init__(self, mobile, headless=False, manual_otp=True, browser_path=None, log_callback=None):
+    def __init__(self, mobile, headless=False, manual_otp=True, log_callback=None, executable_path=None):
         self.mobile = mobile
         self.headless = headless
         self.manual_otp = manual_otp
-        self.browser_path = browser_path
         self.log_callback = log_callback
+        self.executable_path = executable_path
         self.browser = None
         self.context = None
         self.page = None
@@ -217,35 +217,37 @@ class MyntraAutomation:
         try:
             async with async_playwright() as p:
                 # Launch browser with rebrowser patches
-                # Launch browser with rebrowser patches
                 self.log("🌐 Launching browser...")
-                launch_args = {
-                    "headless": self.headless,
-                    "slow_mo": random.randint(40, 110),
-                    "args": [
-                        '--disable-blink-features=AutomationControlled',
-                        '--disable-dev-shm-usage',
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox'
-                    ]
-                }
-                
-                if self.browser_path:
-                    self.log(f"📂 Using custom browser: {self.browser_path}")
-                    launch_args["executable_path"] = self.browser_path
-                else:
-                    launch_args["channel"] = "chrome"
-
                 try:
-                    self.browser = await p.chromium.launch(**launch_args)
-                except Exception as e:
-                    self.log(f"⚠️ First launch attempt failed: {e}")
-                    # Fallback without channel if not using custom path
-                    if not self.browser_path and "channel" in launch_args:
-                        del launch_args["channel"]
-                        self.browser = await p.chromium.launch(**launch_args)
+                    launch_args = {
+                        "headless": self.headless,
+                        "slow_mo": random.randint(40, 110),
+                        "args": [
+                            '--disable-blink-features=AutomationControlled',
+                            '--disable-dev-shm-usage',
+                            '--no-sandbox',
+                            '--disable-setuid-sandbox'
+                        ]
+                    }
+                    
+                    if self.executable_path and os.path.exists(self.executable_path):
+                        self.log(f"🖥️ Using custom browser: {self.executable_path}")
+                        launch_args["executable_path"] = self.executable_path
                     else:
-                        raise e
+                        launch_args["channel"] = 'chrome'
+
+                    self.browser = await p.chromium.launch(**launch_args)
+                except Exception:
+                    self.browser = await p.chromium.launch(
+                        headless=self.headless,
+                        slow_mo=random.randint(40, 110),
+                        args=[
+                            '--disable-blink-features=AutomationControlled',
+                            '--disable-dev-shm-usage',
+                            '--no-sandbox',
+                            '--disable-setuid-sandbox'
+                        ]
+                    )
                 
                 # Create context with realistic settings
                 self.log("⚙️ Setting up browser context...")
