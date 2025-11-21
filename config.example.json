@@ -1,0 +1,13 @@
+{
+    "email": "your-email@example.com",
+    "password": "your-password",
+    "headless": false,
+    "product_url": "https://www.myntra.com/product-url",
+    "size": "M",
+    "pincode": "110001",
+    "phone": "9876543210",
+    "name": "Your Name",
+    "address": "Your complete address",
+    "city": "Your City",
+    "state": "Your State"
+}

@@ -1,0 +1,17 @@
+[
+    {
+        "mobile": "9876543210",
+        "name": "Account 1",
+        "status": "Active"
+    },
+    {
+        "mobile": "9876543211",
+        "name": "Account 2",
+        "status": "Active"
+    },
+    {
+        "mobile": "9876543212",
+        "name": "Account 3",
+        "status": "Active"
+    }
+]
