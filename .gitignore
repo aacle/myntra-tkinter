@@ -32,3 +32,12 @@ Thumbs.db
 .playwright/
 playwright-report/
 test-results/
+
+# Build artifacts
+dist/
+build/
+*.exe
+
+# User data and sessions
+sessions/
+diagnostics/
